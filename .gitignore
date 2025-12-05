@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+chatgpt_airsim/results
+chatgpt_airsim/captures
+chatgpt_airsim/airsim_wrapper.log
+chatgpt_airsim/*.pt
+chatgpt_airsim/original_position.json

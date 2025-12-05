@@ -9,12 +9,14 @@ import json
 import time
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--prompt", type=str, default="prompts/airsim_custom.txt")
+parser.add_argument("--prompt", type=str, default="prompts/airsim_detection.txt")
 parser.add_argument("--sysprompt", type=str, default="system_prompts/airsim_basic.txt")
 parser.add_argument("--vllm-url", type=str, default="http://192.9.203.198:8000/v1", 
                     help="VLLM server URL")
 parser.add_argument("--model", type=str, default="mistralai/Ministral-3-14B-Instruct-2512",
                     help="Model name served by VLLM")
+parser.add_argument("--ground-level", type=float, default=20.0,
+                    help="Ground level offset in meters (distance from Z=0 to ground)")
 args = parser.parse_args()
 
 with open("config.json", "r") as f:
@@ -54,7 +56,7 @@ def ask(prompt):
         }
     )
     completion = openai.ChatCompletion.create(
-        model=args.model,  # VLLM에서 서빙중인 모델명
+        model=args.model,
         messages=chat_history,
         temperature=0.1,
         max_tokens=2048
@@ -88,9 +90,9 @@ class colors:
     YELLOW = "\033[33m"
     BLUE = "\033[34m"
 
-print(f"Initializing AirSim...")
-aw = AirSimWrapper()
-print(f"Done.")
+print(f"{colors.GREEN}Initializing AirSim...{colors.ENDC}")
+aw = AirSimWrapper(ground_level_offset=args.ground_level)
+print(f"{colors.GREEN}Done.{colors.ENDC}")
 
 with open(args.prompt, "r") as f:
     prompt = f.read()
